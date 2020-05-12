@@ -16,7 +16,7 @@ func NewPoint(round int, lastPoint *Point, direction string) *Point {
 			LastPoint: nil,
 		}
 	}
-	canvasParams := rounds.GetCanvasParams(round)
+	roundParams := rounds.GetRoundParams(round)
 	x := lastPoint.X
 	y := lastPoint.Y
 	switch direction {
@@ -25,7 +25,7 @@ func NewPoint(round int, lastPoint *Point, direction string) *Point {
 			y -= 1
 		}
 	case "down":
-		if lastPoint.Y < canvasParams.Height-1 {
+		if lastPoint.Y < roundParams.Height-1 {
 			y += 1
 		}
 	case "left":
@@ -33,7 +33,7 @@ func NewPoint(round int, lastPoint *Point, direction string) *Point {
 			x -= 1
 		}
 	case "right":
-		if lastPoint.X < canvasParams.Width-1 {
+		if lastPoint.X < roundParams.Width-1 {
 			x += 1
 		}
 	default:
@@ -41,7 +41,7 @@ func NewPoint(round int, lastPoint *Point, direction string) *Point {
 	}
 	if x == lastPoint.X && y == lastPoint.Y {
 		return lastPoint
-	}else if lastPoint.LastPoint !=nil && x == lastPoint.LastPoint.X && y == lastPoint.LastPoint.Y {
+	} else if lastPoint.LastPoint != nil && x == lastPoint.LastPoint.X && y == lastPoint.LastPoint.Y {
 		return lastPoint.LastPoint
 	} else {
 		return &Point{

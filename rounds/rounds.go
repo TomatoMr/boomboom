@@ -1,21 +1,43 @@
 package rounds
 
-type Canvas struct {
-	Height int
-	Width int
+import (
+	"math/rand"
+	"sync"
+)
+
+type RoundParams struct {
+	Height       int
+	Width        int
+	BoomNum      int
+	BoomPosition [][]int
 }
 
-func GetCanvasParams(round int) Canvas {
-	params := Canvas{
-		Height: 10,
-		Width:  10,
-	}
-	switch round {
-	case 1:
-		params = Canvas{
-			Height: 10,
-			Width:  10,
+var roundParams RoundParams
+var once = &sync.Once{}
+
+func GetRoundParams(round int) RoundParams {
+	once.Do(func() {
+		roundParams = RoundParams{
+			Height:  10,
+			Width:   10,
+			BoomNum: 1,
+			BoomPosition: [][]int{
+				{5, 5},
+			},
 		}
-	}
-	return params
+		switch round {
+		case 1:
+			roundParams = RoundParams{
+				Height:  10,
+				Width:   10,
+				BoomNum: 1,
+			}
+			x := rand.Intn(roundParams.Width-3) + 2
+			y := rand.Intn(roundParams.Height-3) + 2
+			bp := [][]int{{x, y}}
+			roundParams.BoomPosition = bp
+		}
+	})
+
+	return roundParams
 }

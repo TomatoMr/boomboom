@@ -11,22 +11,30 @@ import (
 
 func Render(round int, point *components.Point) {
 	clearScreen()
-	canvasParams := rounds.GetCanvasParams(round)
+	roundParams := rounds.GetRoundParams(round)
 	road := analyzePoint(point)
-	for i := 0; i < canvasParams.Height; i++ {
-		for j := 0; j < canvasParams.Width; j++ {
+	for i := 0; i < roundParams.Height; i++ {
+		for j := 0; j < roundParams.Width; j++ {
 			isStep := false
 			for _, r := range road {
 				if j == r[0] && i == r[1] {
 					isStep = true
 				}
 			}
+			isBoom := false
+			for _, b := range roundParams.BoomPosition {
+				if j == b[0] && i == b[1] {
+					isBoom = true
+				}
+			}
 			if isStep {
 				fmt.Print("□")
+			} else if isBoom {
+				fmt.Print("⊙")
 			} else {
 				fmt.Print("◎")
 			}
-			if j == canvasParams.Width-1 {
+			if j == roundParams.Width-1 {
 				fmt.Print("\n")
 			}
 		}
