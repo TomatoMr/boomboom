@@ -19,12 +19,14 @@ func Render(round int, point *components.Point) {
 			for _, r := range road {
 				if j == r[0] && i == r[1] {
 					isStep = true
+					break
 				}
 			}
 			isBoom := false
 			for _, b := range roundParams.BoomPosition {
 				if j == b[0] && i == b[1] {
 					isBoom = true
+					break
 				}
 			}
 			if isStep {
@@ -38,7 +40,9 @@ func Render(round int, point *components.Point) {
 				fmt.Print("\n")
 			}
 		}
-
+	}
+	if point.X == roundParams.EndPoint[0] && point.Y == roundParams.EndPoint[1] {
+		fmt.Print("bingo")
 	}
 
 }
