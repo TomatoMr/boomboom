@@ -32,24 +32,49 @@ func GetRoundParams(round int) RoundParams {
 		switch round {
 		case 1:
 			roundParams = RoundParams{
-				Height:     10,
-				Width:      10,
+				Height:     5,
+				Width:      5,
 				StartPoint: []int{0, 0},
-				EndPoint:   []int{9, 9},
+				EndPoint:   []int{4, 4},
+				BoomNum:    1,
 			}
-			roundParams.BoomNum = minBooms(roundParams.Height, roundParams.Width)
-			bp := make([][]int, 0)
-			tp := make([][]int, 0)
-			rand.Seed(time.Now().UnixNano())
-			for i := 0; i < roundParams.BoomNum-1; i++ {
-				x := rand.Intn(roundParams.Width-3) + 2
-				y := rand.Intn(roundParams.Height-3) + 2
-				bp = append(bp, []int{x, y})
-				tp = append(tp, []int{x - 1, y}, []int{x + 1, y}, []int{x, y - 1}, []int{x, y + 1})
+		case 2:
+			roundParams = RoundParams{
+				Height:     6,
+				Width:      6,
+				StartPoint: []int{0, 0},
+				EndPoint:   []int{5, 5},
+				BoomNum:    2,
 			}
-			roundParams.BoomPosition = bp
-			roundParams.TrapPosition = tp
+		case 3:
+			roundParams = RoundParams{
+				Height:     7,
+				Width:      7,
+				StartPoint: []int{0, 0},
+				EndPoint:   []int{6, 6},
+				BoomNum:    3,
+			}
+		case 4:
+			roundParams = RoundParams{
+				Height:     8,
+				Width:      8,
+				StartPoint: []int{0, 0},
+				EndPoint:   []int{7, 7},
+				BoomNum:    4,
+			}
 		}
+		//roundParams.BoomNum = minBooms(roundParams.Height, roundParams.Width)
+		bp := make([][]int, 0)
+		tp := make([][]int, 0)
+		rand.Seed(time.Now().UnixNano())
+		for i := 0; i < roundParams.BoomNum; i++ {
+			x := rand.Intn(roundParams.Width-3) + 2
+			y := rand.Intn(roundParams.Height-3) + 2
+			bp = append(bp, []int{x, y})
+			tp = append(tp, []int{x - 1, y}, []int{x + 1, y}, []int{x, y - 1}, []int{x, y + 1})
+		}
+		roundParams.BoomPosition = bp
+		roundParams.TrapPosition = tp
 	})
 
 	return roundParams
