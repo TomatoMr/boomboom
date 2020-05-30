@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"sync"
 )
 
 func Render(round int, point *components.Point) {
@@ -84,4 +85,44 @@ func clearScreen() {
 		cmd.Stdout = os.Stdout
 		cmd.Run()
 	}
+}
+
+type PointsMap struct {
+	Points map[int][]*components.Point
+	mux    *sync.Mutex
+}
+
+var pm = &PointsMap{
+	Points: make(map[int][]*components.Point, 0),
+	mux:    &sync.Mutex{},
+}
+
+func BestPath(rp rounds.RoundParams, point *components.Point) {
+	if rp.EndPoint[0] != point.X || rp.EndPoint[1] != point.Y {
+		pointR, isStopR := components.NewPoint(rp, point, "right")
+		if !isStopR {
+			BestPath(rp, pointR)
+		}
+		//若允许路径往后或往上走，则可以去掉注释
+		//pointL, isStopL := components.NewPoint(rp, point, "left")
+		//if !isStopL {
+		//	BestPath(rp, pointL)
+		//}
+		pointD, isStopD := components.NewPoint(rp, point, "down")
+		if !isStopD {
+			BestPath(rp, pointD)
+		}
+		//pointU, isStopU := components.NewPoint(rp, point, "up")
+		//if !isStopU {
+		//	BestPath(rp, pointU)
+		//}
+	} else {
+		pm.mux.Lock()
+		pm.Points[point.Length] = append(pm.Points[point.Length], point)
+		pm.mux.Unlock()
+	}
+}
+
+func GetPM() *PointsMap {
+	return pm
 }
