@@ -16,7 +16,11 @@ func KeyEvent(round int) {
 	defer termbox.Close()
 
 	fmt.Println("press enter to start the game.")
-	startPoint := components.NewPoint(round, nil, "")
+	rp := rounds.GetRoundParams(round)
+	startPoint, isStop := components.NewPoint(rp, nil, "")
+	if isStop {
+		fmt.Println("you cannot go to there.")
+	}
 	currentPoint := startPoint
 	for {
 		switch ev := termbox.PollEvent(); ev.Type {
@@ -30,29 +34,56 @@ func KeyEvent(round int) {
 					fmt.Println("you cannot go to a trap.")
 					continue
 				}
-				currentPoint = components.NewPoint(round, currentPoint, "up")
+				currentPoint, isStop = components.NewPoint(rp, currentPoint, "up")
+				if isStop {
+					fmt.Println("you cannot go to there.")
+				}
 				render.Render(round, currentPoint)
 			case termbox.KeyArrowDown:
 				if checkTrap(round, currentPoint, "down") {
 					fmt.Println("you cannot go to a trap.")
 					continue
 				}
-				currentPoint = components.NewPoint(round, currentPoint, "down")
+				currentPoint, isStop = components.NewPoint(rp, currentPoint, "down")
+				if isStop {
+					fmt.Println("you cannot go to there.")
+				}
 				render.Render(round, currentPoint)
 			case termbox.KeyArrowLeft:
 				if checkTrap(round, currentPoint, "left") {
 					fmt.Println("you cannot go to a trap.")
 					continue
 				}
-				currentPoint = components.NewPoint(round, currentPoint, "left")
+				currentPoint, isStop = components.NewPoint(rp, currentPoint, "left")
+				if isStop {
+					fmt.Println("you cannot go to there.")
+				}
 				render.Render(round, currentPoint)
 			case termbox.KeyArrowRight:
 				if checkTrap(round, currentPoint, "right") {
 					fmt.Println("you cannot go to a trap.")
 					continue
 				}
-				currentPoint = components.NewPoint(round, currentPoint, "right")
+				currentPoint, isStop = components.NewPoint(rp, currentPoint, "right")
+				if isStop {
+					fmt.Println("you cannot go to there.")
+				}
 				render.Render(round, currentPoint)
+			case termbox.KeyCtrlA:
+				fmt.Println("give u a road.")
+				render.BestPath(rp, startPoint)
+				pm := render.GetPM()
+				length := 0
+				for l, _ := range pm.Points {
+					length = l
+					break
+				}
+				for l, _ := range pm.Points {
+					if length > l {
+						length = l
+					}
+				}
+				render.Render(round, pm.Points[length][0])
 			case termbox.KeyEnter:
 				currentPoint = startPoint
 				render.Render(round, currentPoint)
